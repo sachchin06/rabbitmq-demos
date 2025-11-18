@@ -11,13 +11,15 @@ amqp.connect("amqp://localhost", function (error0, connection) {
       throw error1;
     }
 
-    var queue = "hello";
-    var msg = "Hello World!";
+    var queue = "task_queue";
+    var msg = process.argv.slice(2).join(" ") || "Hello World!";
 
     channel.assertQueue(queue, {
       durable: false,
     });
-    channel.sendToQueue(queue, Buffer.from(msg));
+    channel.sendToQueue(queue, Buffer.from(msg), {
+      persistent: true,
+    });
 
     console.log(" [x] Sent %s", msg);
   });
